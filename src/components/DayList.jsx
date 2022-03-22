@@ -9,12 +9,7 @@ import DayListItem from "./DayListItem";
 export default function DayList(props) {
   const { days, day, setDay } = props;
 
-  const parsedDays = days.map(dayData => {
-    if (day === dayData.name) {
-      return <DayListItem {...dayData} selected setDay={setDay} />;
-    }
-    return <DayListItem {...dayData} setDay={setDay}/>
-  });
+  const parsedDays = days.map(dayData => <DayListItem {...dayData} setDay={setDay} selected={ day === dayData.name }/>);
 
   return (
     <ul>
