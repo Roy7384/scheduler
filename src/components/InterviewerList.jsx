@@ -9,12 +9,20 @@ import InterviewerListItem from "./InterviewerListItem";
 
 export default function InterviewerList(props) {
   const { interviewers, setInterviewer, interviewer } = props;
-    
+
   const parsedInterviewers = interviewers.map(person => {
+    const { id, name, avatar } = person;
     return (
-      <InterviewerListItem {...person} key={person.id} setInterviewer={setInterviewer} interviewer={interviewer}/>
-    )
-  }) 
+      <InterviewerListItem
+        key={id}
+        name={name}
+        avatar={avatar}
+        selected={id === interviewer}
+        setInterviewer={() => { setInterviewer(id); }}
+      />
+    );
+  });
+  
   return (
     <section className="interviewers">
       <h4 className="interviewers__header text--light">Interviewer</h4>
