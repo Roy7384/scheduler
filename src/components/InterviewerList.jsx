@@ -8,17 +8,17 @@ import InterviewerListItem from "./InterviewerListItem";
 // interviewer:number - a number that represents the id of the currently selected interviewer
 
 export default function InterviewerList(props) {
-  const { interviewers, setInterviewer, interviewer } = props;
+  const { interviewers, onChange, value } = props;
 
-  const parsedInterviewers = interviewers.map(person => {
-    const { id, name, avatar } = person;
+  const parsedInterviewers = interviewers.map(interviewer => {
+    const { id, name, avatar } = interviewer;
     return (
       <InterviewerListItem
         key={id}
         name={name}
         avatar={avatar}
-        selected={id === interviewer}
-        setInterviewer={() => { setInterviewer(id); }}
+        selected={id === value}
+        setInterviewer={() => { onChange(id); }}
       />
     );
   });
