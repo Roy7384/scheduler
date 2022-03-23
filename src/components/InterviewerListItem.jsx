@@ -1,6 +1,6 @@
 import React from "react";
 
-const InterviewerListItem = function (props) {
+export default function InterviewerListItem (props) {
 
   return (
     <li className="interviewers__item">
