@@ -7,6 +7,7 @@ import classNames from "classnames";
 // name:string - the name of the interviewer
 // avatar:url - a url to an image of the interviewer
 // selected: Boolean
+// setInterviewer: set state function
 
 export default function InterviewerListItem (props) {
   const { id, name, avatar, selected, setInterviewer } = props;
