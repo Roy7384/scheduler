@@ -6,12 +6,13 @@ import classNames from "classnames";
 // id:number - the id of the interviewer
 // name:string - the name of the interviewer
 // avatar:url - a url to an image of the interviewer
-// selected: Boolean
+// interviewer: currently selected interveiwer, id
 // setInterviewer: set state function
 
 export default function InterviewerListItem (props) {
-  const { id, name, avatar, selected, setInterviewer } = props;
+  const { id, name, avatar, interviewer, setInterviewer } = props;
 
+  const selected = id === interviewer;
   const InterviewerListItemClassName = classNames("interviewers__item", {
     "interviewers__item--selected": selected
   })
