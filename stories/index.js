@@ -147,5 +147,5 @@ storiesOf('Appoinment', module)
   .add('No Appointments', () => <Appointment />)
   .add("Appointment", () => <Appointment time={'12pm'} />)
   .add('Header', () => <Header time={'12pm'} />)
-  .add('Empty', () => <Empty setDay={action("setDay")} />)
+  .add('Empty', () => <Empty onAdd={action("onAdd")} />)
 

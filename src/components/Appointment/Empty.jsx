@@ -3,7 +3,7 @@ import React from "react";
 export default function Empty(props) {
 
   return (
-    <main className="appointment__add" onClick={props.setDay}>
+    <main className="appointment__add" onClick={props.onAdd}>
       <img 
         src="images/add.png" 
         alt="Add" 
