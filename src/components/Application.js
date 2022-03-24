@@ -11,6 +11,9 @@ export default function Application(props) {
 
   const [days, setDays] = useState([]);
   const [day, setDay] = useState('Monday');
+  const [appointments, setAppointments] = useState({});
+  
+  const state = { day, days, appointments };
   const parsedAppointments = Object.values(appointments).map(appointment => 
     <Appointment key={appointment.id} {...appointment} />
     );
