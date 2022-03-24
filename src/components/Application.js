@@ -9,6 +9,7 @@ import "components/Application.scss";
 
 export default function Application(props) {
 
+  const [days, setDays] = useState([]);
   const [day, setDay] = useState('Monday');
   const parsedAppointments = Object.values(appointments).map(appointment => 
     <Appointment key={appointment.id} {...appointment} />
