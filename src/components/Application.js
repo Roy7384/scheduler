@@ -13,7 +13,14 @@ export default function Application(props) {
   const [day, setDay] = useState('Monday');
   const parsedAppointments = Object.values(appointments).map(appointment => 
     <Appointment key={appointment.id} {...appointment} />
-    )
+    );
+  
+  useEffect(() => {
+    const daysUrl = '/api/days'
+    axios.get(daysUrl).then(response => {
+      setDays(response)
+    })
+  }, []);
 
   return (
     <main className="layout">
