@@ -9,13 +9,15 @@ export default function useVisualMode(initMode) {
 
     if (replace) {
       setMode(newMode);
-      const copyHistory = [...history];
-      setHistory([...copyHistory.slice(0, -1), newMode]);
+      setHistory(prevHistory => {
+        const copyHistory = [...prevHistory];
+        return [...copyHistory.slice(0, -1), newMode]
+      });
       return;
     }
     
     setMode(newMode)
-    setHistory([...history, newMode]); 
+    setHistory(prevHistory => [...prevHistory, newMode]); 
   };
 
   function back() {
