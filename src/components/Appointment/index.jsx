@@ -41,18 +41,18 @@ export default function Appointment(props) {
         transition(SHOW);
       })
       .catch(() => {
-        transition(ERROR_SAVE);
+        transition(ERROR_SAVE, true);
       });
   }
 
   function cancel() {
-    transition(DELETING);
+    transition(DELETING, true);
     cancelInterview(id)
       .then(() => {
         transition(EMPTY);
       })
       .catch(() => {
-        transition(ERROR_DELETE);
+        transition(ERROR_DELETE, true);
       });
   }
 
