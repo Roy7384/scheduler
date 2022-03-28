@@ -39,7 +39,7 @@ export default function useApplicationData(props) {
       let spotsLeft = 0;
       day.appointments.forEach(appId => {
         if (!updatedState.appointments[appId].interview) {
-          spotsLeft += 1;
+          spotsLeft ++;
         }
       });
       const newDayData = { ...day, spots: spotsLeft };
