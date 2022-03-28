@@ -10,7 +10,7 @@ import Form from "./Form";
 
 export default function Appointment(props) {
 
-  const { time, interview, interviewers } = props;
+  const { id, time, interview, interviewers, bookInterview } = props;
 
   const EMPTY = "EMPTY";
   const SHOW = "SHOW";
@@ -20,6 +20,15 @@ export default function Appointment(props) {
     interview ? SHOW : EMPTY
   );
   
+  function save(name, interviewer) {
+    const interview = {
+      student: name,
+      interviewer
+    }
+    bookInterview(id, interview);
+    transition(SHOW);
+  }
+
   return (
     <article className="appointment">
       <Header time={time}/>
@@ -34,6 +43,7 @@ export default function Appointment(props) {
       <Form 
         interviewers={interviewers}
         onCancel={back}
+        onSave={save}
       />
       )}
     </article>
