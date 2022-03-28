@@ -29,11 +29,26 @@ export default function useApplicationData(props) {
     });
   }, []);
 
-  // update day selected by user
-  const setDay = day => setState({ ...state, day });
+  // function to update day selected by user
+  const setDay = day => setState(prevState => ({ ...prevState, day }));
+
+  // function to calculate spots remaining and update it in state
+  function updateSpots(appointments) {
+    const updatedState = {...state, appointments};
+    const newDaysData = updatedState.days.map(day => {
+      let spotsLeft = 0;
+      day.appointments.forEach(appId => {
+        if (!updatedState.appointments[appId].interview) {
+          spotsLeft += 1;
+        }
+      });
+      const newDayData = { ...day, spots: spotsLeft };
+      return newDayData;
+    });
+    setState(prevState => ({ ...prevState, days: newDaysData }));
+  }
 
   function bookInterview(id, interview) {
-    console.log('Saving interivew id:', id, interview);
     const appointment = {
       ...state.appointments[id],
       interview: { ...interview }
@@ -45,12 +60,12 @@ export default function useApplicationData(props) {
 
     return axios.put(`/api/appointments/${id}`, appointment)
       .then(() => {
-        setState({ ...state, appointments });
-      });
+        setState(prevState => ({ ...prevState, appointments }));
+        updateSpots(appointments);
+      })
   }
 
   function cancelInterview(id) {
-    console.log('Cancelling interview id: ', id);
     const appointment = {
       ...state.appointments[id],
       interview: null
@@ -62,9 +77,10 @@ export default function useApplicationData(props) {
 
     return axios.delete(`/api/appointments/${id}`)
       .then(() => {
-        setState({ ...state, appointments });
-      });
+        setState(prevState => ({ ...state, appointments }));
+        updateSpots(appointments);
+      })
   }
 
-  return { state, setDay, bookInterview, cancelInterview }
+  return { state, setDay, bookInterview, cancelInterview };
 }
