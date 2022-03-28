@@ -28,7 +28,7 @@ export default function Appointment(props) {
       interviewer
     };
 
-    transition(SAVING);
+    transition(SAVING);  // show Status when processing request
     bookInterview(id, interview).then(() => {
       transition(SHOW);
     });
