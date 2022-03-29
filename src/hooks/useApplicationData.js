@@ -5,7 +5,7 @@ export default function useApplicationData(props) {
   const SET_DAY = "SET_DAY";
   const SET_APPLICATION_DATA = "SET_APPLICATION_DATA";
   const SET_INTERVIEW = "SET_INTERVIEW";
-  const SET_DAYS = "SET_DAYS";
+  const SET_SPOTS = "SET_SPOTS";
 
   function tasksReducer(state, action) {
     switch (action.type) {
@@ -16,11 +16,17 @@ export default function useApplicationData(props) {
         const { days, appointments, interviewers } = action;
         return {...state, days, appointments, interviewers};
       }
-      case SET_DAYS: {
-        return {...state, days: action.days};
-      }
       case SET_INTERVIEW: {
         return {...state, appointments: action.appointments};
+      }
+      case SET_SPOTS: {
+        const newDays = state.days.map(day => {
+          if (day.id === action.dayId) {
+            return {...day, spots: action.spots}
+          }
+          return day
+        })
+        return {...state, days: newDays};
       }
       default:
         throw new Error(
@@ -62,19 +68,22 @@ export default function useApplicationData(props) {
   const setDay = day => dispatch({ type: SET_DAY, day });
 
   // function to calculate spots remaining and update it in state
-  function updateSpots(appointments) {
-    const updatedState = { ...state, appointments };
-    const newDaysData = updatedState.days.map(day => {
-      let spotsLeft = 0;
-      day.appointments.forEach(appId => {
-        if (!updatedState.appointments[appId].interview) {
-          spotsLeft ++;
-        }
-      });
-      const newDayData = { ...day, spots: spotsLeft };
-      return newDayData;
-    });
-    dispatch({ type: SET_DAYS, days: newDaysData });
+  function updateSpots(id, method) {
+    // find which day the appointment belong to
+    const dayToUpdate = state.days.filter(day => day.appointments.includes(id))
+    const dayId = dayToUpdate[0].id;
+    
+    // get current spots number
+    let spots = state.days[dayId - 1].spots;
+    // update spots accordingly 
+    if (method === 'ADD') {
+      spots += 1
+    }
+    if (method === 'MINUS') {
+      spots -= 1
+    } 
+    // update state
+    dispatch({ type: SET_SPOTS, spots, dayId });
   }
 
   function bookInterview(id, interview) {
@@ -90,7 +99,7 @@ export default function useApplicationData(props) {
     return axios.put(`/api/appointments/${id}`, appointment)
       .then(() => {
         dispatch({ type: SET_INTERVIEW, appointments });
-        updateSpots(appointments);
+        updateSpots(id, 'MINUS');
       });
   }
 
@@ -107,7 +116,7 @@ export default function useApplicationData(props) {
     return axios.delete(`/api/appointments/${id}`)
       .then(() => {
         dispatch({ type: SET_INTERVIEW, appointments });
-        updateSpots(appointments);
+        updateSpots(id, 'ADD');
       });
   }
 
