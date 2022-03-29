@@ -3,23 +3,24 @@ import axios from "axios";
 
 export default function useApplicationData(props) {
   const SET_DAY = "SET_DAY";
+  const SET_APPLICATION_DATA = "SET_APPLICATION_DATA";
+  const SET_INTERVIEW = "SET_INTERVIEW";
   const SET_DAYS = "SET_DAYS";
-  const SET_APPOINTMENTS = "SET_APPOINTMENTS";
-  const SET_INTERVIEWERS = "SET_INTERVIEWERS";
 
   function tasksReducer(state, action) {
     switch (action.type) {
       case SET_DAY: {
         return {...state, day: action.day};
       }
+      case (SET_APPLICATION_DATA): {
+        const { days, appointments, interviewers } = action;
+        return {...state, days, appointments, interviewers};
+      }
       case SET_DAYS: {
         return {...state, days: action.days};
       }
-      case SET_APPOINTMENTS: {
+      case SET_INTERVIEW: {
         return {...state, appointments: action.appointments};
-      }
-      case SET_INTERVIEWERS: {
-        return {...state, interviewers: action.interviewers};
       }
       default:
         throw new Error(
@@ -48,9 +49,12 @@ export default function useApplicationData(props) {
       axios.get(appointmentsUrl),
       axios.get(interviewersUrl)
     ]).then((all) => {
-      dispatch({ type: SET_DAYS, days: all[0].data});
-      dispatch({ type: SET_APPOINTMENTS, appointments: all[1].data});
-      dispatch({ type: SET_INTERVIEWERS, interviewers: all[2].data});
+      dispatch({ 
+        type: SET_APPLICATION_DATA, 
+        days: all[0].data,
+        appointments: all[1].data,
+        interviewers: all[2].data
+      });
     });
   }, []);
 
@@ -85,7 +89,7 @@ export default function useApplicationData(props) {
 
     return axios.put(`/api/appointments/${id}`, appointment)
       .then(() => {
-        dispatch({ type: SET_APPOINTMENTS, appointments });
+        dispatch({ type: SET_INTERVIEW, appointments });
         updateSpots(appointments);
       });
   }
@@ -102,7 +106,7 @@ export default function useApplicationData(props) {
 
     return axios.delete(`/api/appointments/${id}`)
       .then(() => {
-        dispatch({ type: SET_APPOINTMENTS, appointments });
+        dispatch({ type: SET_INTERVIEW, appointments });
         updateSpots(appointments);
       });
   }
