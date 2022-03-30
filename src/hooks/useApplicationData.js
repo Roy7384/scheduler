@@ -36,6 +36,17 @@ export default function useApplicationData(props) {
         interviewers: all[2].data
       });
     });
+
+    // create WebSocket connection
+    const wsUrl = process.env.REACT_APP_WEBSOCKET_URL;
+    const webSocket = new WebSocket(wsUrl);
+
+    webSocket.onopen = function(event) {
+      webSocket.send('ping');
+    }
+    webSocket.onmessage = event => { 
+      console.log(event.data)
+    }
   }, []);
 
   // function to update day selected by user
