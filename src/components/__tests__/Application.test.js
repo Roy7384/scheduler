@@ -1,4 +1,5 @@
 import React from "react";
+import axios from "__mocks__/axios";
 
 import { render, cleanup, waitForElement, fireEvent, getByText, getByTestId, getAllByTestId, getByAltText, queryByText, prettyDOM } from "@testing-library/react";
 
@@ -114,5 +115,48 @@ describe("Application", () => {
     const monday = days.filter(day => queryByText(day, 'Monday'))[0]
     expect(getByText(monday, '1 spot remaining')).toBeInTheDocument(); 
   });
-});
 
+  it("shows the save error when failing to save an appointment", async () => {
+    axios.put.mockRejectedValueOnce();
+    const { container } = render(<Application />);
+    await waitForElement(() => getByText(container, "Archie Cohen"));
+
+    // get the empty appointment slot
+    const appointment = getAllByTestId(container, "appointment")[0];
+
+    // click add button to get create Form to show
+    fireEvent.click(getByAltText(appointment, "Add"));
+
+    // click an interviewer
+    fireEvent.click(getByAltText(appointment, "Tori Malcolm"))
+
+    // use change event to input student name
+    fireEvent.change(getAllByTestId(appointment, "student-name-input")[0], {target: {value: "Roy"}})
+
+    // click the save button
+    fireEvent.click(getByText(appointment, "Save"));
+    
+    // checking if Error is showing after the Saving status
+    expect(getByText(appointment, "Saving")).toBeInTheDocument();
+    await waitForElement(() => getByText(appointment, "Could not save appointment"));
+  })
+
+  it("shows the delete error when failing to delete an existing appointment", async () => {
+    axios.delete.mockRejectedValueOnce();
+    const { container } = render(<Application />);
+    await waitForElement(() => getByText(container, "Archie Cohen"));
+
+    // get the 2nd appointment slot which in mock data has interivew booked
+    const appointment = getAllByTestId(container, "appointment")[1];
+
+    // click Delete button
+    fireEvent.click(getByAltText(appointment, "Delete"));
+
+    // click the confirm button
+    fireEvent.click(getByText(appointment, "Confirm"));
+    
+    // checking if Error is showing after the Deleting status
+    expect(getByText(appointment, "Deleting")).toBeInTheDocument();
+    await waitForElement(() => getByText(appointment, "Could not delete appointment"));
+  })
+});
