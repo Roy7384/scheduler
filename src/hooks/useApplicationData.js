@@ -46,8 +46,8 @@ export default function useApplicationData(props) {
   function updateSpots(id, method, edit) {
     if (edit) return;
     // find which day the appointment belong to
-    const dayToUpdate = state.days.filter(day => day.appointments.includes(id))
-    const dayId = dayToUpdate[0].id;
+    const dayToUpdate = state.days.find(day => day.name === state.day);
+    const dayId = dayToUpdate.id;
     
     // get current spots number
     let spots = state.days[dayId - 1].spots;
