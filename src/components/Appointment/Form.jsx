@@ -37,6 +37,10 @@ export default function Form(props) {
       return;
     }
     setError('');
+    if (props.student) {
+      onSave(student, interviewer, "edit");
+      return
+    }
     onSave(student, interviewer);
   }
 

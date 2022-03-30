@@ -29,14 +29,14 @@ export default function Appointment(props) {
     interview ? SHOW : EMPTY
   );
 
-  function save(name, interviewer) {
+  function save(name, interviewer, edit) {
     const interview = {
       student: name,
       interviewer
     };
 
     transition(SAVING);  // show Status when processing request
-    bookInterview(id, interview)
+    bookInterview(id, interview, edit)
       .then(() => {
         transition(SHOW);
       })

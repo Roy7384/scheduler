@@ -68,7 +68,8 @@ export default function useApplicationData(props) {
   const setDay = day => dispatch({ type: SET_DAY, day });
 
   // function to calculate spots remaining and update it in state
-  function updateSpots(id, method) {
+  function updateSpots(id, method, edit) {
+    if (edit) return;
     // find which day the appointment belong to
     const dayToUpdate = state.days.filter(day => day.appointments.includes(id))
     const dayId = dayToUpdate[0].id;
@@ -86,7 +87,7 @@ export default function useApplicationData(props) {
     dispatch({ type: SET_SPOTS, spots, dayId });
   }
 
-  function bookInterview(id, interview) {
+  function bookInterview(id, interview, edit) {
     const appointment = {
       ...state.appointments[id],
       interview: { ...interview }
@@ -99,7 +100,7 @@ export default function useApplicationData(props) {
     return axios.put(`/api/appointments/${id}`, appointment)
       .then(() => {
         dispatch({ type: SET_INTERVIEW, appointments });
-        updateSpots(id, 'MINUS');
+        updateSpots(id, 'MINUS', edit);
       });
   }
 
