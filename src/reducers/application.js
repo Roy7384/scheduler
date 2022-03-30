@@ -13,16 +13,8 @@ function tasksReducer(state, action) {
       return {...state, days, appointments, interviewers};
     }
     case SET_INTERVIEW: {
-      return {...state, appointments: action.appointments};
-    }
-    case SET_SPOTS: {
-      const newDays = state.days.map(day => {
-        if (day.id === action.dayId) {
-          return {...day, spots: action.spots}
-        }
-        return day
-      })
-      return {...state, days: newDays};
+      const { days, appointments } = action;
+      return {...state, days, appointments };
     }
     default:
       throw new Error(
@@ -35,6 +27,5 @@ export {
   SET_DAY,
   SET_APPLICATION_DATA,
   SET_INTERVIEW,
-  SET_SPOTS,
   tasksReducer
 }

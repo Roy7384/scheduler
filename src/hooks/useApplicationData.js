@@ -5,7 +5,6 @@ import {
   SET_DAY,
   SET_APPLICATION_DATA,
   SET_INTERVIEW,
-  SET_SPOTS,
   tasksReducer } from "reducers/application";
 
 export default function useApplicationData(props) {
@@ -43,11 +42,12 @@ export default function useApplicationData(props) {
   const setDay = day => dispatch({ type: SET_DAY, day });
 
   // function to calculate spots remaining and update it in state
-  function updateSpots(id, method, edit) {
-    if (edit) return;
+  function updateSpots(method, edit) {
+    // dont do anything if user just editing appointment
+    if (edit) return state.days;
+
     // find which day the appointment belong to
     const dayToUpdate = state.days.find(day => day.name === state.day);
-    const dayId = dayToUpdate.id;
     
     // get current spots number
     let spots = dayToUpdate.spots;
@@ -57,9 +57,12 @@ export default function useApplicationData(props) {
     }
     if (method === 'MINUS') {
       spots -= 1
-    } 
-    // update state
-    dispatch({ type: SET_SPOTS, spots, dayId });
+    }
+
+    const newDay = {...dayToUpdate, spots};
+
+    // Return new days state
+    return state.days.map(day => day.name === state.day ? newDay : day);
   }
 
   function bookInterview(id, interview, edit) {
@@ -74,8 +77,8 @@ export default function useApplicationData(props) {
 
     return axios.put(`/api/appointments/${id}`, appointment)
       .then(() => {
-        dispatch({ type: SET_INTERVIEW, appointments });
-        updateSpots(id, 'MINUS', edit);
+        const days = updateSpots('MINUS', edit);
+        dispatch({ type: SET_INTERVIEW, appointments, days });
       });
   }
 
@@ -91,8 +94,8 @@ export default function useApplicationData(props) {
 
     return axios.delete(`/api/appointments/${id}`)
       .then(() => {
-        dispatch({ type: SET_INTERVIEW, appointments });
-        updateSpots(id, 'ADD');
+        const days = updateSpots('ADD');
+        dispatch({ type: SET_INTERVIEW, appointments, days });
       });
   }
 
