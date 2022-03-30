@@ -50,7 +50,7 @@ export default function useApplicationData(props) {
     const dayId = dayToUpdate.id;
     
     // get current spots number
-    let spots = state.days[dayId - 1].spots;
+    let spots = dayToUpdate.spots;
     // update spots accordingly 
     if (method === 'ADD') {
       spots += 1
