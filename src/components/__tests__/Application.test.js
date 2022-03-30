@@ -19,7 +19,7 @@ describe("Application", () => {
   });
 
   it("loads data, books an interview and reduces the spots remaining for the first day by 1", async () => {
-    const { container, debug } = render(<Application />);
+    const { container } = render(<Application />);
 
     await waitForElement(() => getByText(container, "Archie Cohen"));
 
@@ -54,5 +54,33 @@ describe("Application", () => {
     expect(getByText(monday, 'no spots remaining')).toBeInTheDocument();
   });
 
+  it("loads data, cancels an interview and increases the spots remaining for Monday by 1", async () => {
+    // 1. Render the Application.
+    const { container } = render(<Application />);
+  
+    // 2. Wait until the text "Archie Cohen" is displayed.
+    await waitForElement(() => getByText(container, "Archie Cohen"));
+  
+    // 3. Click the "Delete" button on the second appointment.
+    const secondAppointment = getAllByTestId(container, "appointment")[1]; 
+    fireEvent.click(getByAltText(secondAppointment, "Delete"));
+
+    // 4. Check the confirmation message is shown.
+    expect(getByText(secondAppointment, 'Delete the appointment?')).toBeInTheDocument();
+
+    // 5. Click the "Confirm" button on the Confirm component
+    fireEvent.click(getByText(secondAppointment, "Confirm"));
+
+    // 6. Check that the element with the text "Deleting" is displayed.
+    expect(getByText(secondAppointment, 'Deleting')).toBeInTheDocument();
+    
+    // 7. Wait until the second appointment slot has the empty Add button displayed.
+    await waitForElement(() => getByAltText(secondAppointment, 'Add'));
+
+    // 8. Check that the DayListItem with the text "Monday" also has the text "2 spots remaining".
+    const days = getAllByTestId(container, 'day');
+    const monday = days.filter(day => queryByText(day, 'Monday'))[0]
+    expect(getByText(monday, '2 spots remaining')).toBeInTheDocument(); 
+  });
 });
 

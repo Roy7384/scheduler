@@ -82,5 +82,9 @@ export default {
 
   put: jest.fn(() => {
     return Promise.resolve()
+  }), 
+
+  delete: jest.fn(() => {
+    return Promise.resolve()
   })
 }
