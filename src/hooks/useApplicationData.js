@@ -44,15 +44,11 @@ export default function useApplicationData(props) {
     const wsUrl = process.env.REACT_APP_WEBSOCKET_URL;
     const webSocket = new WebSocket(wsUrl);
 
-    webSocket.onopen = function (event) {
-      webSocket.send(`ping at ${Date()}`);
-    };
     webSocket.onmessage = event => {
       const data = JSON.parse(event.data);
       if (data.type === SET_INTERVIEW) {
         const { id, interview } = JSON.parse(event.data);
         dispatch({ type: SET_INTERVIEW, id, interview });
-        // console.log(event.data)
       }
     };
 
