@@ -1,4 +1,5 @@
 # Interview Scheduler
+This is a simple, single-page application developed using React, Storybook and Cypress.
 
 ## Setup
 
