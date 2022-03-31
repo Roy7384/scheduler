@@ -21,3 +21,8 @@ npm test
 ```sh
 npm run storybook
 ```
+## App UI
+!["UI"](https://github.com/Roy7384/scheduler/blob/master/docs/UI.png?raw=true) 
+
+## App Demo
+!["UI"](https://github.com/Roy7384/scheduler/blob/master/docs/demo.gif?raw=true) 
