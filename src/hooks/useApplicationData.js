@@ -39,59 +39,49 @@ export default function useApplicationData(props) {
     });
   }, []);
 
+  useEffect(() => {
+    // create WebSocket connection
+    const wsUrl = process.env.REACT_APP_WEBSOCKET_URL;
+    const webSocket = new WebSocket(wsUrl);
+
+    webSocket.onopen = function (event) {
+      webSocket.send(`ping at ${Date()}`);
+    };
+    webSocket.onmessage = event => {
+      const data = JSON.parse(event.data);
+      if (data.type === SET_INTERVIEW) {
+        const { id, interview } = JSON.parse(event.data);
+        dispatch({ type: SET_INTERVIEW, id, interview });
+        // console.log(event.data)
+      }
+    };
+
+    return () => {
+      webSocket.close();
+    }
+  }, [])
+
 // function to update day selected by user
 const setDay = day => dispatch({ type: SET_DAY, day });
-
-// function to calculate spots remaining and update it in state
-function updateSpots(newAppointments) {
-
-  // find which day the appointment belong to
-  const dayToUpdate = state.days.find(d => d.name === state.day);
-
-  // calculate spots by looping through appointments
-  let spots = 0;
-  dayToUpdate.appointments.forEach(appId => {
-    if (!newAppointments[appId].interview) {
-      spots++;
-    }
-  });
-  const newDay = { ...dayToUpdate, spots };
-
-  // Return new days state
-  return state.days.map(d => d.name === state.day ? newDay : d);
-}
 
 function bookInterview(id, interview) {
   const appointment = {
     ...state.appointments[id],
     interview: { ...interview }
   };
-  const appointments = {
-    ...state.appointments,
-    [id]: appointment
-  };
 
   return axios.put(`/api/appointments/${id}`, appointment)
     .then(() => {
-      const days = updateSpots(appointments);
-      dispatch({ type: SET_INTERVIEW, appointments, days });
+      dispatch({ type: SET_INTERVIEW, id, interview });
     });
 }
 
 function cancelInterview(id) {
-  const appointment = {
-    ...state.appointments[id],
-    interview: null
-  };
-  const appointments = {
-    ...state.appointments,
-    [id]: appointment
-  };
+  const interview = null;
 
   return axios.delete(`/api/appointments/${id}`)
     .then(() => {
-      const days = updateSpots(appointments);
-      dispatch({ type: SET_INTERVIEW, appointments, days });
+      dispatch({ type: SET_INTERVIEW, id, interview });
     });
 }
 
