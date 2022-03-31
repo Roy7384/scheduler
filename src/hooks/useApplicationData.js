@@ -44,39 +44,46 @@ export default function useApplicationData(props) {
     webSocket.onopen = function(event) {
       webSocket.send('ping');
     }
-    webSocket.onmessage = event => { 
-      console.log(event.data)
-    }
+    // webSocket.onmessage = event => { 
+    //   if (event.data.type === SET_INTERVIEW) {
+    //     const { id, interview } = event.data
+    //     const appointment = {
+    //       ...state.appointments[id],
+    //       interview: { ...interview }
+    //     };
+    //     const appointments = {
+    //       ...state.appointments,
+    //       [id]: appointment
+    //     };
+    //     const days = updateSpots()
+    //     dispatch({ type: SET_INTERVIEW, appointments, days})
+    //   }
+    // }
   }, []);
 
   // function to update day selected by user
   const setDay = day => dispatch({ type: SET_DAY, day });
 
   // function to calculate spots remaining and update it in state
-  function updateSpots(method, edit) {
-    // dont do anything if user just editing appointment
-    if (edit) return state.days;
-
+  function updateSpots(newAppointments) {
+  
     // find which day the appointment belong to
     const dayToUpdate = state.days.find(day => day.name === state.day);
     
-    // get current spots number
-    let spots = dayToUpdate.spots;
-    // update spots accordingly 
-    if (method === 'ADD') {
-      spots += 1
-    }
-    if (method === 'MINUS') {
-      spots -= 1
-    }
-
+    // calculate spots by looping through appointments
+    let spots = 0;
+    dayToUpdate.appointments.forEach(appId => {
+      if (!newAppointments[appId].interview) {
+        spots ++
+      }
+    })
     const newDay = {...dayToUpdate, spots};
 
     // Return new days state
     return state.days.map(day => day.name === state.day ? newDay : day);
   }
 
-  function bookInterview(id, interview, edit) {
+  function bookInterview(id, interview) {
     const appointment = {
       ...state.appointments[id],
       interview: { ...interview }
@@ -88,7 +95,7 @@ export default function useApplicationData(props) {
 
     return axios.put(`/api/appointments/${id}`, appointment)
       .then(() => {
-        const days = updateSpots('MINUS', edit);
+        const days = updateSpots(appointments);
         dispatch({ type: SET_INTERVIEW, appointments, days });
       });
   }
@@ -105,7 +112,7 @@ export default function useApplicationData(props) {
 
     return axios.delete(`/api/appointments/${id}`)
       .then(() => {
-        const days = updateSpots('ADD');
+        const days = updateSpots(appointments);
         dispatch({ type: SET_INTERVIEW, appointments, days });
       });
   }
