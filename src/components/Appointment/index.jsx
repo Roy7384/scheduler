@@ -38,14 +38,14 @@ export default function Appointment(props) {
     }
   }, [interview, transition, mode]);
 
-  function save(name, interviewer, edit) {
+  function save(name, interviewer) {
     const interview = {
       student: name,
       interviewer
     };
 
     transition(SAVING);  // show Status when processing request
-    bookInterview(id, interview, edit)
+    bookInterview(id, interview)
       .then(() => {
         transition(SHOW);
       })
