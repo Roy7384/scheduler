@@ -12,8 +12,8 @@ import Confirm from "./Confirm";
 import Error from "./Error";
 
 export default function Appointment(props) {
-
-  const { id, time, interview, interviewers, bookInterview, cancelInterview } = props;
+  const { id, time, interview, interviewers, bookInterview, cancelInterview } =
+    props;
 
   const EMPTY = "EMPTY";
   const SHOW = "SHOW";
@@ -25,9 +25,7 @@ export default function Appointment(props) {
   const ERROR_SAVE = "ERROR_SAVE";
   const ERROR_DELETE = "ERROR_DELETE";
 
-  const { mode, transition, back } = useVisualMode(
-    interview ? SHOW : EMPTY
-  );
+  const { mode, transition, back } = useVisualMode(interview ? SHOW : EMPTY);
 
   useEffect(() => {
     if (interview && mode === EMPTY) {
@@ -41,10 +39,10 @@ export default function Appointment(props) {
   function save(name, interviewer) {
     const interview = {
       student: name,
-      interviewer
+      interviewer,
     };
 
-    transition(SAVING);  // show Status when processing request
+    transition(SAVING); // show Status when processing request
     bookInterview(id, interview)
       .then(() => {
         transition(SHOW);
@@ -73,16 +71,16 @@ export default function Appointment(props) {
         <Show
           student={interview.student}
           interviewer={interview.interviewer}
-          onDelete={() => { transition(CONFIRM); }}
-          onEdit={() => { transition(EDIT); }}
+          onDelete={() => {
+            transition(CONFIRM);
+          }}
+          onEdit={() => {
+            transition(EDIT);
+          }}
         />
       )}
       {mode === CREATE && (
-        <Form
-          interviewers={interviewers}
-          onCancel={back}
-          onSave={save}
-        />
+        <Form interviewers={interviewers} onCancel={back} onSave={save} />
       )}
       {mode === EDIT && (
         <Form
@@ -93,20 +91,14 @@ export default function Appointment(props) {
           onSave={save}
         />
       )}
-      {mode === SAVING && (
-        <Status message='Saving' />
-      )}
-      {mode === DELETING && (
-        <Status message='Deleting' />
-      )}
-      {mode === CONFIRM && (
-        <Confirm onCancel={back} onConfirm={cancel} />
-      )}
+      {mode === SAVING && <Status message="Saving" />}
+      {mode === DELETING && <Status message="Deleting" />}
+      {mode === CONFIRM && <Confirm onCancel={back} onConfirm={cancel} />}
       {mode === ERROR_SAVE && (
-        <Error message='Could not save appointment' onClose={back} />
+        <Error message="Could not save appointment" onClose={back} />
       )}
       {mode === ERROR_DELETE && (
-        <Error message='Could not delete appointment' onClose={back} />
+        <Error message="Could not delete appointment" onClose={back} />
       )}
     </article>
   );
