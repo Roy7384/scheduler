@@ -1,5 +1,6 @@
 # Interview Scheduler
 This is a simple, single-page application developed using React, Storybook and Cypress.
+Deployed on Netlify, can be visited [here](https://dreamy-sherbet-be6113.netlify.app/). 
 
 ## Setup
 
